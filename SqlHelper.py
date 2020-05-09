@@ -61,3 +61,12 @@ class SqlHelper:
             return True
         else:
             return False
+
+    def get_fullName(self, username):
+        command = "SELECT fullname FROM userinfo where USERNAME = '" + username + "'"
+        user = self.con.execute(command)
+        fullname = ""
+        for row in user:
+            fullname = row[0]
+
+        return fullname

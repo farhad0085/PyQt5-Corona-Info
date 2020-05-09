@@ -4,6 +4,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (QApplication, QMainWindow)
 from register import Ui_RegisterWindow
 from SqlHelper import SqlHelper
+from userhomepage import Ui_MainUserWindow
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self):
@@ -81,6 +82,12 @@ class Ui_MainWindow(QMainWindow):
         self.w.show()
         self.close()
 
+    def userMainWindow(self, username):
+        #print(username)
+        self.w = Ui_MainUserWindow(username)
+        self.w.show()
+        self.close()
+
     def loginbtnclicked(self):
         username = self.lineEdit.text()
         password = self.lineEdit_2.text()
@@ -101,9 +108,11 @@ class Ui_MainWindow(QMainWindow):
 
         else:
             if self.db.checkPassword(username, password):
-                print("loggin success")
+                #print("loggin success")
+                self.userMainWindow(username)
             else:
-                print("error password")
+                Ui_RegisterWindow().showerror("Error", "Password error!")
+                #print("error password")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

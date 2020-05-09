@@ -3,10 +3,12 @@ import web
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 
-
 class Ui_MainUserWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, username):
+        #print(username)
         super().__init__()
+
+        self.userfullname = self.get_user_fullname(username)
 
         self.setObjectName("MainUserWindow")
         self.resize(671, 481)
@@ -110,7 +112,7 @@ class Ui_MainUserWindow(QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainUserWindow", "Live Updates!"))
-        self.label.setText(_translate("MainUserWindow", "<html><head/><body><p><span style=\" font-size:18pt; color:#4b4b4b;\">Welcome #Username</span></p></body></html>"))
+        self.label.setText(_translate("MainUserWindow", "<html><head/><body><p><span style=\" font-size:18pt; color:#4b4b4b;\">Welcome "+self.userfullname+"</span></p></body></html>"))
         self.label_2.setText(_translate("MainUserWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:16pt;\">Country</span></p></body></html>"))
         self.label_3.setText(_translate("MainUserWindow", "<html><head/><body><p><span style=\" font-size:11pt;\">Total Cases</span></p></body></html>"))
         self.label_4.setText(_translate("MainUserWindow", "<html><head/><body><p><span style=\" font-size:11pt;\">New Cases</span></p></body></html>"))
@@ -123,14 +125,19 @@ class Ui_MainUserWindow(QMainWindow):
         self.lineEdit_8.setPlaceholderText(_translate("MainUserWindow", "Country Name..."))
         self.pushButton_3.setText(_translate("MainUserWindow", "View Stats"))
 
+    def get_user_fullname(self, username):
+        from SqlHelper import SqlHelper
+        db = SqlHelper()
+        return db.get_fullName(username)
 
     def get_data(self):
-        data = web.get_stats(self.lineEdit_8.text())
-        if not len(data) == 0:
-            self.set_value(data)
-        else:
-            from register import Ui_RegisterWindow
-            Ui_RegisterWindow().showerror("Error", "Country data not found")
+        if not self.lineEdit_8.text() == "":
+            data = web.get_stats(self.lineEdit_8.text())
+            if not len(data) == 0:
+                self.set_value(data)
+            else:
+                from register import Ui_RegisterWindow
+                Ui_RegisterWindow().showerror("Error", "Country data not found")
 
     def set_value(self, data):
         _translate = QtCore.QCoreApplication.translate
